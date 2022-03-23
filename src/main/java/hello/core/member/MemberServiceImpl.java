@@ -4,6 +4,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
+    // 생성자로 의존관계 주입
     public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
