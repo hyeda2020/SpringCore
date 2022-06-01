@@ -2,6 +2,7 @@ package hello.core.discount;
 
 import hello.core.member.Grade;
 import hello.core.member.Member;
+import org.springframework.stereotype.Component;
 
 /* 고정 할인 */
 public class FixDiscountPolicy implements DiscountPolicy{
