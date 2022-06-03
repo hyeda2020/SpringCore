@@ -3,14 +3,16 @@ package hello.core.order;
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor // final이 붙은 필드들을 모아서 생성자를 자동으로 생성해줌
 public class OrderServiceImpl implements OrderService {
 
-    private MemberRepository memberRepository;
-    private DiscountPolicy discountPolicy;
+    private final MemberRepository memberRepository;
+    private final DiscountPolicy discountPolicy;
 
     /**
      * 수정자 주입
@@ -18,6 +20,7 @@ public class OrderServiceImpl implements OrderService {
      * 수정자 주입을 포함한 나머지 주입 방식은 모두 생성자 이후에 호출되므로, 필드에 final 키워드 사용 불가
      * 가끔 옵션이 필요할 때 사용(생성자 주입과 동시에 사용 가능)
      * */
+    /*
     @Autowired
     public void setMemberRepository(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -27,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     public void setDiscountPolicy(DiscountPolicy discountPolicy) {
         this.discountPolicy = discountPolicy;
     }
+    */
 
     /**
      * 필드 주입
@@ -45,11 +49,13 @@ public class OrderServiceImpl implements OrderService {
      * 생성자 호출 시점에 딱 1번만 호출되는 것이 보장됨
      * 프레임워크에 의존하지 않고 순수한 자바 언어의 특징을 잘 살리는 방법임
      * */
+    /* lombok @RequiredArgsConstructor 적용으로 생성자 생략
     @Autowired // 생성자가 딱 하나만 있으면 @Autowired 생략 가능
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }
+    */
 
     /**
      * 참고로, @Autowired의 기본 동작은 주입할 대상이 없으면 오류 발생
