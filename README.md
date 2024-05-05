@@ -1,0 +1,91 @@
+# SpringCore
+리포지토리 설명 : 인프런 김영한님의 강의 '스프링 핵심 원리 - 기본편' 스터디 정리  
+https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81-%ED%95%B5%EC%8B%AC-%EC%9B%90%EB%A6%AC-%EA%B8%B0%EB%B3%B8%ED%8E%B8
+
+# 스프링이란?
+자바 언어 기반 프레임워크로, 자바가 가진 객체 지향 프로그래밍의 장점을 활용하여 편리하게 애플리케이션을 개발할 수 있게 도와줌  
+※ 객체 지향 프로그래밍의 핵심은 바로 '역할'과 '구현'의 분리를 통해 프로그램을 유연하고 변경 용이하게 개발하는 것!  
+
+# 스프링 컨테이너와 스프링 빈
+[의존관계 주입을 고려하지 않은 주문 도메인 클래스 예시]
+![OrderServicelmpl](https://github.com/hyeda2020/SpringCore/assets/139141270/16463f0d-c891-4730-bcb3-ba3befd766cc)
+
+    /* 주문 서비스 구현체 */
+    public class OrderServiceImpl implements OrderService {
+      // 할인정책 인터페이스에 의존하면서 동시에 고정 할인정책 구현 클래스에도 의존
+      private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
+      
+      // ... 이하 생략
+    }
+
+[AppConfig 도입을 통한 사용 영역과 구성 영역 분리]
+![page17image41872144](https://github.com/hyeda2020/SpringCore/assets/139141270/7441eb8f-6d31-413b-a4bf-49ee5365f59d)
+
+AppConfig 도입을 통해 OrderServiceImpl 입장에서는 생성자를 통해 어떤 구현 객체가 들어올지(주입될지) 알 필요가 없어졌으며  
+OrderServiceImpl의 생성자를 통해서 어떤 구현 객체을 주입할지는 오직 외부(AppConfig)에서 결정함으로써  
+OrderServiceImpl은 실행에만 집중 가능.  
+또한, 할인 정책이 FixDiscountPolicy -> RateDiscountPolicy로 변경된다고 하여도  
+클라이언트(OrderServiceImpl)의 코드는 변경할 필요 없이 오직 AppConfig 소스 변경만으로 유연하게 할인 정책 변경 가능.
+
+    /* 의존관계 주입을 위한 AppConfig 클래스 */
+    public class AppConfig {
+      public OrderService orderService() {
+        return new OrderServiceImpl(new FixDiscountPolicy()); // 고정 할인 정책
+      }
+    }
+
+    /* OrderServiceImpl - 생성자 주입 */
+    public class OrderServiceImpl implements OrderService {
+      private final DiscountPolicy discountPolicy;
+      public OrderServiceImpl(DiscountPolicy discountPolicy) {
+        this.discountPolicy = discountPolicy;
+      }
+    }
+  
+[스프링 컨테이너 적용]  
+<img width="833" alt="109380930-bbb14680-791a-11eb-99a0-f7b8a49875f8" src="https://github.com/hyeda2020/SpringCore/assets/139141270/d28f8544-fc66-4efd-8ab6-3227c03eb03b">
+
+기존엔 개발자가 AppConfig를 사용해서 직접 객체를 생성하고 의존 관계를 주입했다면  
+스프링 컨테이너를 사용할 경우 @Configuration 애노테이션이 붙은 구성 정보를 지정해주면  
+해당 구성 정보에 @Bean 이라 적힌 메서드를 모두 호출해서 반환된 객체를 스프링 컨테이너에 등록하여 의존 관계를 주입해줌  
+
+    /* 스프링 컨테이너를 생성할 때 지정해주기 위한 구성 정보 설정 */
+    @Configuration
+    public class AppConfig {
+      @Bean
+      public MemberService memberService() {
+        return new MemberServiceImpl(memberRepository());
+      }
+       
+      @Bean
+      public OrderService orderService() {
+        return new OrderServiceImpl(
+          memberRepository(),
+          discountPolicy());
+      }
+      
+      @Bean
+      public MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+      }
+       
+      @Bean
+      public DiscountPolicy discountPolicy() {
+        return new RateDiscountPolicy();
+      }
+    }
+    
+
+    
+    /* 스프링 컨테이너 생성 */
+    ApplicationContext applicationContext = 
+      new AnnotationConfigApplicationContext(AppConfig.class); // AppConfig.class를 구성 정보로 지정
+
+<img width="833" alt="스프링 컨테이너" src="https://github.com/hyeda2020/SpringCore/assets/139141270/dcd43789-d90d-43ff-a80b-1a93eb2b9e6a">  
+
+스프링 컨테이너는 파라미터로 넘어온 설정 클래스 정보를 사용해서 @Bean 애노테이션이 붙은 메서드들을 스프링 빈으로 등록하고
+
+<img width="833" alt="스프링 컨테이너" src="https://github.com/hyeda2020/SpringCore/assets/139141270/4d9a7e05-c4bd-41ee-b4f8-6b37c3528d7a">
+
+설정 정보를 참고해서 자동적으로 의존관계를 주입(DI)해줌.
+
