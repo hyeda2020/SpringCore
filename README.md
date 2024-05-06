@@ -101,7 +101,8 @@ OrderServiceImpl은 실행에만 집중 가능.
 [스프링의 싱글톤 컨테이너]
 ![image](https://github.com/hyeda2020/SpringCore/assets/139141270/6a1e6f05-a164-4a0b-b6b8-c62fea8fdad6)
 - 
-- 스프링 컨테이너는 싱글턴 패턴을 직접 적용하지 않아도 객체 인스턴스를 싱글톤으로 관리해주며, 덕분에 구체 클래스 의존 및 private 생성자로부터 자유롭게 싱글톤을 사용할 수 있음
+스프링 컨테이너는 싱글턴 패턴을 직접 적용하지 않아도 객체 인스턴스를 싱글톤으로 관리해주며,  
+덕분에 구체 클래스 의존 및 private 생성자로부터 자유롭게 싱글톤을 사용할 수 있음
 
 [싱글톤 방식의 주의점]
 -  
@@ -145,6 +146,7 @@ OrderServiceImpl은 실행에만 집중 가능.
 사실 스프링 컨테이너 AnnotationConfigApplicationContext에 파라미터로 넘겨진 구성 정보 AppConfig를 포함하여  
 스프링에서는 `@Bean` 애노테이션이 붙은 클래스 자체가 아닌, 해당 클래스를 상속받은 임의의 다른 클래스를 빈으로 등록하고  
 CGLIB라는 바이트코드 조작 라이브러리를 사용해서 그 임의의 다른 클래스가 바로 싱글톤이 되도록 보장함.  
+
 ![image](https://github.com/hyeda2020/SpringCore/assets/139141270/f549f9d5-2169-4515-a743-19bb4f0485d6)
 
 ※ @Configuration 을 적용하지 않고, @Bean 만 적용하면 어떻게 될까?
