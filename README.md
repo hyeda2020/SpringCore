@@ -46,7 +46,7 @@ OrderServiceImpl은 실행에만 집중 가능.
 <img width="833" alt="109380930-bbb14680-791a-11eb-99a0-f7b8a49875f8" src="https://github.com/hyeda2020/SpringCore/assets/139141270/d28f8544-fc66-4efd-8ab6-3227c03eb03b">
 - 
 기존엔 개발자가 AppConfig를 사용해서 직접 객체를 생성하고 의존 관계를 주입했다면  
-스프링 컨테이너를 사용할 경우 @Configuration 애노테이션이 붙은 구성 정보를 지정해주면  
+스프링 컨테이너를 사용할 경우 `@Configuration` 애노테이션이 붙은 구성 정보를 지정해주면  
 해당 구성 정보에 `@Bean` 이라 적힌 메서드를 모두 호출해서 반환된 객체를 스프링 컨테이너에 등록하여 의존 관계를 주입해줌  
 
     /* 스프링 컨테이너를 생성할 때 지정해주기 위한 구성 정보 설정 */
@@ -83,7 +83,7 @@ OrderServiceImpl은 실행에만 집중 가능.
 
 <img width="833" alt="스프링 컨테이너" src="https://github.com/hyeda2020/SpringCore/assets/139141270/dcd43789-d90d-43ff-a80b-1a93eb2b9e6a">  
 
-스프링 컨테이너는 파라미터로 넘어온 설정 클래스 정보를 사용해서 @Bean 애노테이션이 붙은 메서드들을 스프링 빈으로 등록하고
+스프링 컨테이너는 파라미터로 넘어온 설정 클래스 정보를 사용해서 `@Bean` 애노테이션이 붙은 메서드들을 스프링 빈으로 등록하고
 
 <img width="833" alt="스프링 컨테이너" src="https://github.com/hyeda2020/SpringCore/assets/139141270/4d9a7e05-c4bd-41ee-b4f8-6b37c3528d7a">
 
