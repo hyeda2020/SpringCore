@@ -113,7 +113,7 @@ OrderServiceImpl은 실행에만 집중 가능.
 3) 가급적 읽기만 가능해야 함  
 4) 필드 대신에 자바에서 공유되지 않는, 지역변수, 파라미터, ThreadLocal 등을 사용해야 함
 
-[@Configuration과 싱글톤]
+[`@Configuration`과 싱글톤]
 - 
 스프링 컨테이너에 구성 정보로 지정된 AppConfig 소스를 보면 memberRepository()가 두 번 호출되는 것 처럼 보이나  
 실제로는 memberRepository 인스턴스는 모두 같은 인스턴스가 공유되어 사용됨.  
@@ -149,7 +149,7 @@ CGLIB라는 바이트코드 조작 라이브러리를 사용해서 그 임의의
 
 ![image](https://github.com/hyeda2020/SpringCore/assets/139141270/f549f9d5-2169-4515-a743-19bb4f0485d6)
 
-※ @Configuration 을 적용하지 않고, @Bean 만 적용하면 어떻게 될까?
+※ `@Configuration` 을 적용하지 않고, `@Bean` 만 적용하면 어떻게 될까?
 -
 스프링 구성 정보에 `@Configuration` 을 붙이면 바이트코드를 조작하는 CGLIB 기술을 사용해서 싱글톤을 보장하지만,  
 만약 다음과 같이 `@Bean`만 적용하면 해당 설정 정보 내의 객체들이 스프링 빈으로 등록은 되지만 싱글톤은 적용되지 않음.  
@@ -164,4 +164,85 @@ CGLIB라는 바이트코드 조작 라이브러리를 사용해서 그 임의의
 
 따라서, 스프링 설정 정보는 항상 `@Configuration` 을 사용
 
-      
+# 4. 컴포넌트 스캔 및 의존관계 자동 주입
+[`@Component` 애노테이션]
+-  
+컴포넌트 스캔은 이름 그대로 `@Component` 애노테이션이 붙은 클래스를 스캔해서 스프링 빈으로 등록.  
+컴포넌트 스캔은 `@Component` 뿐만 아니라 다음과 내용도 추가로 대상에 포함함.  
+- `@Component` : 컴포넌트 스캔에서 사용
+- `@Controlller` : 스프링 MVC 컨트롤러에서 사용
+- `@Service` : 스프링 비즈니스 로직에서 사용
+- `@Repository` : 스프링 데이터 접근 계층에서 사용
+- `@Configuration` : 스프링 설정 정보에서 사용
+
+[`@Autowired` 애노테이션]
+-  
+`@Configuration` 애노테이션을 활용한 스프링 구성 정보에서는 `@Bean`으로 직접 설정 정보를 작성했고, 의존관계도 직접 명시할 수 있으나  
+이를 클래스 안에서 해결해야 한다면 이런 설정 정보 자체가 없기 때문에, 클래스에서 자체적으로 `@Autowired` 애노테이션을 써서 의존관계를 자동으로 주입해야 함.  
+
+    @Component
+    public class MemberServiceImpl implements MemberService {
+        private final MemberRepository memberRepository;
+        
+        @Autowired // 생성자에 @Autowired 를 지정하여 의존관계 자동 주입
+        public MemberServiceImpl(MemberRepository memberRepository) {
+            this.memberRepository = memberRepository;
+        }
+    }
+
+[1. `@ComponentScan`]
+-  
+![image](https://github.com/hyeda2020/SpringCore/assets/139141270/fcb1164b-886e-4a6c-af98-30669ffae5c4)
+`@ComponentScan` 은 `@Component` 가 붙은 모든 클래스를 스프링 빈으로 등록.  
+(이때 스프링 빈의 기본 이름은 클래스명을 사용하되 맨 앞글자만 소문자를 사용)  
+
+[2. `@Autowired` 의존관계 자동 주입]
+-
+![image](https://github.com/hyeda2020/SpringCore/assets/139141270/22c9c9e5-e71f-4642-81b7-c6e6660ee1ec)
+생성자에 `@Autowired`를 지정하면, 스프링 컨테이너가 자동으로 해당 스프링 빈을 찾아서 주입  
+
+[다양한 의존관계 주입 방법]
+-
+1. 생성자 주입(권장)  
+※ 생성자가 딱 1개만 있으면 `@Autowired`를 생략해도 자동 주입 됨(물론 스프링 빈에만 해당)
+
+  
+       @Component  
+       public class OrderServiceImpl implements OrderService {
+   
+           private final MemberRepository memberRepository;
+
+           @Autowired
+           public OrderServiceImpl(MemberRepository memberRepository) {
+               this.memberRepository = memberRepository;
+           }
+        }
+       
+3. 수정자(setter) 주입(비권장)  
+※ `@Autowired`의 기본 동작은 주입할 대상이 없으면 오류가 발생하므로  
+주입할 대상이 없어도 동작하게 하려면 @Autowired(required = false) 로 지정
+
+  
+       @Component  
+       public class OrderServiceImpl implements OrderService {
+
+           private MemberRepository memberRepository;
+
+           @Autowired
+           public void setMemberRepository(MemberRepository memberRepository) {
+               this.memberRepository = memberRepository;
+           }
+       }
+   
+5. 필드 주입(절대 쓰지 말자)
+   
+  
+       @Component  
+       public class OrderServiceImpl implements OrderService {
+
+           @Autowired
+           private MemberRepository memberRepository;
+        }
+
+
+   
