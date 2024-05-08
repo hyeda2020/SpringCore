@@ -192,13 +192,13 @@ CGLIB라는 바이트코드 조작 라이브러리를 사용해서 그 임의의
 
 [1. `@ComponentScan`]
 -  
-![image](https://github.com/hyeda2020/SpringCore/assets/139141270/fcb1164b-886e-4a6c-af98-30669ffae5c4)
+![image](https://github.com/hyeda2020/SpringCore/assets/139141270/fcb1164b-886e-4a6c-af98-30669ffae5c4)  
 `@ComponentScan` 은 `@Component` 가 붙은 모든 클래스를 스프링 빈으로 등록.  
 (이때 스프링 빈의 기본 이름은 클래스명을 사용하되 맨 앞글자만 소문자를 사용)  
 
 [2. `@Autowired` 의존관계 자동 주입]
 -
-![image](https://github.com/hyeda2020/SpringCore/assets/139141270/22c9c9e5-e71f-4642-81b7-c6e6660ee1ec)
+![image](https://github.com/hyeda2020/SpringCore/assets/139141270/22c9c9e5-e71f-4642-81b7-c6e6660ee1ec)  
 생성자에 `@Autowired`를 지정하면, 스프링 컨테이너가 자동으로 해당 스프링 빈을 찾아서 주입  
 
 [다양한 의존관계 주입 방법]
@@ -220,7 +220,7 @@ CGLIB라는 바이트코드 조작 라이브러리를 사용해서 그 임의의
        
 3. 수정자(setter) 주입(비권장)  
 ※ `@Autowired`의 기본 동작은 주입할 대상이 없으면 오류가 발생하므로  
-주입할 대상이 없어도 동작하게 하려면 @Autowired(required = false) 로 지정
+주입할 대상이 없어도 동작하게 하려면 `@Autowired(required = false)`로 지정
 
   
        @Component  
